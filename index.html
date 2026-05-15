@@ -28,11 +28,9 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 .btn-primary{background:var(--gold-dark);color:#fff;border:none;border-radius:4px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-primary:hover{background:var(--rose-dark)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.btn-secondary{background:transparent;color:var(--gold-dark);border:.5px solid var(--gold);border-radius:4px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center}
 .couple-names{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:var(--gold-dark);margin-bottom:.3rem;letter-spacing:.04em}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:.5rem}
-.hero h1 em{font-style:italic;color:var(--rose-dark)}
 .hero p{font-size:13px;color:var(--muted);margin-bottom:2.2rem;max-width:270px;line-height:1.85}
 .btn-group{display:flex;flex-direction:column;gap:12px;width:100%;max-width:280px}
 #upload-screen .content{flex:1;padding:1.8rem 1.4rem;display:flex;flex-direction:column;gap:1.4rem}
@@ -44,13 +42,11 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 .drop-text{font-size:13px;color:var(--muted);text-align:center;line-height:1.7}
 .preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .preview-item{aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;background:#f0e8e0;display:flex;align-items:center;justify-content:center}
-.preview-item img, .preview-item video{width:100%;height:100%;object-fit:cover;display:block}
 .remove-btn{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:22px;height:22px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;z-index:10}
 .progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:none;margin-top:10px}
 .progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
 .qr-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.05);text-align:center;margin-bottom:20px}
 .qr-card img{width:200px;height:200px;margin-bottom:10px}
-.url-box{background:var(--gold-light);padding:10px;border-radius:6px;font-size:12px;word-break:break-all;margin-bottom:15px;color:var(--gold-dark)}
 .toast{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;z-index:1001;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap;max-width:92vw;text-align:center}
 .toast.show{opacity:1}
 .loading{position:fixed;inset:0;background:rgba(253,250,246,.9);z-index:998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
@@ -67,15 +63,9 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 <div class="screen active" id="landing">
   <div class="top-bar"><div class="logo">Perihan &amp; Çağlar</div></div>
   <div class="hero">
-    <svg width="68" height="68" viewBox="0 0 72 72" fill="none" style="margin-bottom:1rem;opacity:.85">
-      <circle cx="24" cy="20" r="10" stroke="#c8a4a4" stroke-width="1.5"/>
-      <path d="M8 52c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="#c8a4a4" stroke-width="1.5" stroke-linecap="round"/>
-      <circle cx="48" cy="20" r="10" stroke="#c9a84c" stroke-width="1.5"/>
-      <path d="M32 52c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
     <div class="couple-names">Perihan &amp; Çağlar</div>
     <h1>Anılarınızı<br><em>bizimle paylaşın</em></h1>
-    <p>Bu özel günde çektiğiniz fotoğraf ve videoları yükleyin — her an değerli 🤍</p>
+    <p>Fotoğraf ve videolarınızı orijinal kalitede yükleyin lo (Maks 200MB) 🤍</p>
     <div class="btn-group">
       <button class="btn-primary" onclick="showScreen('upload-screen')"><i class="ti ti-camera"></i> Yüklemeye Başla</button>
       <button class="btn-secondary" onclick="showScreen('qr-screen')"><i class="ti ti-qrcode"></i> QR Kodu Göster</button>
@@ -91,16 +81,16 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
   <div class="content">
     <div>
       <div class="section-title">Anı Paylaş</div>
-      <div class="section-sub">Fotoğraf veya video yükleyin (Maks 200MB) 🤍</div>
+      <div class="section-sub">Orijinal kalitede yükleme yapılır.</div>
     </div>
     <div>
-      <label class="lbl" for="guest-name">Adınız</label>
-      <input class="txt-input" type="text" id="guest-name" placeholder="Adınızı yazın..." maxlength="40">
+      <label class="lbl">Adınız</label>
+      <input class="txt-input" type="text" id="guest-name" placeholder="Adınızı yazın...">
     </div>
-    <div class="drop-zone" id="drop-zone">
+    <div class="drop-zone">
       <input type="file" id="file-input" accept="image/*,video/*" multiple>
       <i class="ti ti-circle-plus" style="font-size:36px;color:var(--rose)"></i>
-      <div class="drop-text"><strong>Dosya seçin</strong> veya sürükleyin<br><span style="font-size:10px; opacity:0.7">(Video sınırı: 200MB)</span></div>
+      <div class="drop-text">Dosyaları seçin veya sürükleyin</div>
     </div>
     <div class="preview-grid" id="preview-grid" style="display:none"></div>
     <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -118,19 +108,14 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
     <div class="qr-card">
       <img id="qr-img" src="" alt="QR Kod">
     </div>
-    <div class="url-box" id="qr-url-box">URL yükleniyor...</div>
     <button class="btn-primary" onclick="copyURL()" style="width:100%"><i class="ti ti-copy"></i> Linki Kopyala</button>
   </div>
 </div>
 
 <script>
-// ════════════════════════════════════════════
-//  CONFIG & GOOGLE DRIVE APPS SCRIPT
-// ════════════════════════════════════════════
-const DEPLOYMENT_ID = "AKfycbxhBr1lMvWLgARSatfaw5YB_NqvodX1kbE0lad4pTajFgYoDEW__ukZkWNA8a3NQ6-Ccw";
-const DRIVE_URL = `https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec`;
-const MAX_VIDEO_SIZE = 200 * 1024 * 1024; // 200 MB
-
+// Güncellenen Yeni URL
+const DRIVE_URL = "https://script.google.com/macros/s/AKfycby5YOZRHGSC8kf7ZR-n8rFPL89BGlw18F7Ne_b7AFQl/exec";
+const CHUNK_SIZE = 1024 * 1024 * 2; // 2MB Parçalar
 let selectedFiles = [];
 
 function showScreen(id) {
@@ -145,137 +130,85 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function showLoading(txt) {
-  document.getElementById('loading-text').textContent = txt;
-  document.getElementById('loading').classList.add('show');
-}
-
-function hideLoading() { document.getElementById('loading').classList.remove('show'); }
-
-// ════════════════════════════════════════════
-//  DOSYA İŞLEMLERİ
-// ════════════════════════════════════════════
 document.getElementById('file-input').addEventListener('change', e => {
-  const files = Array.from(e.target.files);
-  
-  files.forEach(f => {
-    // Video boyutu kontrolü
-    if (f.type.startsWith('video/') && f.size > MAX_VIDEO_SIZE) {
-      showToast(`${f.name} çok büyük (Sınır: 200MB)`);
-      return;
-    }
-    
+  Array.from(e.target.files).forEach(f => {
+    if (f.size > 200 * 1024 * 1024) { showToast("Sınır: 200MB"); return; }
     selectedFiles.push(f);
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const div = document.createElement('div');
-      div.className = 'preview-item';
-      
-      if(f.type.startsWith('image/')) {
-        div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
-      } else {
-        div.innerHTML = `<i class="ti ti-video" style="font-size:24px; color:var(--muted)"></i><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
-      }
-      
-      document.getElementById('preview-grid').appendChild(div);
-    };
-    reader.readAsDataURL(f);
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    div.innerHTML = `<i class="ti ti-file" style="font-size:24px; color:var(--muted)"></i><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
+    document.getElementById('preview-grid').appendChild(div);
   });
-  
   document.getElementById('preview-grid').style.display = 'grid';
-  document.getElementById('upload-btn').disabled = selectedFiles.length === 0;
+  document.getElementById('upload-btn').disabled = false;
 });
 
-function removeFile(idx) { 
-  selectedFiles.splice(idx, 1); 
-  renderPreview(); 
-}
+function removeFile(idx) { selectedFiles.splice(idx, 1); renderPreview(); }
 
 function renderPreview() {
-  const grid = document.getElementById('preview-grid');
-  grid.innerHTML = '';
+  const grid = document.getElementById('preview-grid'); grid.innerHTML = '';
   selectedFiles.forEach((f, i) => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const div = document.createElement('div');
-      div.className = 'preview-item';
-      if(f.type.startsWith('image/')) {
-        div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
-      } else {
-        div.innerHTML = `<i class="ti ti-video" style="font-size:24px; color:var(--muted)"></i><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
-      }
-      grid.appendChild(div);
-    };
-    reader.readAsDataURL(f);
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    div.innerHTML = `<i class="ti ti-file" style="font-size:24px; color:var(--muted)"></i><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
+    grid.appendChild(div);
   });
-  if(!selectedFiles.length) { 
-    grid.style.display='none'; 
-    document.getElementById('upload-btn').disabled=true; 
-  }
+  if(!selectedFiles.length) { grid.style.display='none'; document.getElementById('upload-btn').disabled=true; }
 }
 
-function readFileAsDataURL(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.readAsDataURL(file);
-  });
-}
-
-// ════════════════════════════════════════════
-//  YÜKLEME (FOTO & VİDEO)
-// ════════════════════════════════════════════
 async function uploadFiles() {
-  const guestName = document.getElementById('guest-name').value.trim() || 'Anonim Misafir';
+  const guest = document.getElementById('guest-name').value.trim() || 'Anonim';
   const btn = document.getElementById('upload-btn');
   btn.disabled = true;
   document.getElementById('progress-bar').style.display = 'block';
 
-  try {
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const currentFile = selectedFiles[i];
-      const fileType = currentFile.type.startsWith('image/') ? 'FOTO' : 'VIDEO';
-      showLoading(`${fileType} Yükleniyor (${i+1}/${selectedFiles.length})...`);
+  for (let i = 0; i < selectedFiles.length; i++) {
+    const file = selectedFiles[i];
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const fileId = "FILE_" + Date.now() + "_" + i;
+
+    for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
+      const start = chunkIdx * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
       
-      const dataURL = await readFileAsDataURL(currentFile);
-      
-      const payload = {
-        guest: guestName,
-        data: dataURL,
-        name: `${fileType}_${guestName}_${Date.now()}_${currentFile.name}`
-      };
+      const chunkData = await new Promise(res => {
+        const reader = new FileReader();
+        reader.onload = e => res(e.target.result.split(',')[1]);
+        reader.readAsDataURL(chunk);
+      });
+
+      document.getElementById('loading-text').textContent = `Yükleniyor: ${file.name} (${chunkIdx+1}/${totalChunks})`;
+      document.getElementById('loading').classList.add('show');
 
       await fetch(DRIVE_URL, {
         method: "POST",
-        mode: "no-cors", 
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
+        mode: "no-cors",
+        body: JSON.stringify({
+          fileId: fileId,
+          name: `PC_${guest}_${file.name}`,
+          data: chunkData,
+          chunkIdx: chunkIdx,
+          totalChunks: totalChunks,
+          guest: guest
+        })
       });
-
-      document.getElementById('progress-fill').style.width = ((i+1)/selectedFiles.length)*100 + '%';
+      
+      document.getElementById('progress-fill').style.width = ((chunkIdx + 1) / totalChunks) * 100 + "%";
     }
-
-    hideLoading();
-    showToast('🤍 Harika! Tüm anılarınız Drive klasörüne yüklendi.');
-    selectedFiles = []; renderPreview();
-    document.getElementById('guest-name').value = '';
-    setTimeout(() => { document.getElementById('progress-bar').style.display = 'none'; }, 2000);
-
-  } catch (e) {
-    hideLoading();
-    showToast('Hata oluştu, tekrar deneyin.');
-    console.error(e);
   }
+
+  document.getElementById('loading').classList.remove('show');
+  showToast('🤍 Başarıyla yüklendi!');
+  selectedFiles = []; renderPreview();
   btn.disabled = false;
 }
 
 function buildQR() {
-  const url = window.location.href.split('?')[0].split('#')[0];
-  document.getElementById('qr-url-box').textContent = url;
-  const src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(url) + '&color=2c2016&bgcolor=ffffff&margin=10';
+  const url = window.location.href.split('#')[0];
+  const src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(url);
   document.getElementById('qr-img').src = src;
 }
-
 function copyURL() { navigator.clipboard.writeText(window.location.href.split('#')[0]); showToast('Link kopyalandı!'); }
 </script>
 </body>
