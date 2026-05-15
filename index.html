@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perihan & Çağlar — Anı Paylaşım</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#c8a4a4;--rose-dark:#8b5e5e;
+  --gold:#c9a84c;--gold-light:#faf4e1;--gold-dark:#7a5c1e;
+  --cream:#fdfaf6;--ink:#2c2016;--muted:#8a7c6e;
+  --border:rgba(201,168,76,0.25);
+}
+html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif}
+.screen{display:none;flex-direction:column;min-height:100vh;animation:fadeIn .35s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.top-bar{padding:1.4rem 1.4rem 0;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:.15em;color:var(--gold-dark);text-transform:uppercase}
+.back-btn{background:none;border:.5px solid var(--border);border-radius:20px;padding:6px 15px;font-family:'Jost',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s}
+.back-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
+.lbl{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px}
+.txt-input{width:100%;border:.5px solid var(--border);border-radius:4px;padding:11px 13px;font-family:'Jost',sans-serif;font-size:13px;background:#fff;color:var(--ink);outline:none;transition:border .2s}
+.txt-input:focus{border-color:var(--gold)}
+.err{font-size:12px;color:#c0392b;min-height:16px;text-align:center}
+.btn-primary{background:var(--gold-dark);color:#fff;border:none;border-radius:4px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:var(--rose-dark)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{background:transparent;color:var(--gold-dark);border:.5px solid var(--gold);border-radius:4px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary:hover{background:var(--gold-light)}
+#landing{background:linear-gradient(160deg,#fdfaf6 0%,#f5ede8 100%)}
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center}
+.couple-names{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:var(--gold-dark);margin-bottom:.3rem;letter-spacing:.04em}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:.5rem}
+.hero h1 em{font-style:italic;color:var(--rose-dark)}
+.hero p{font-size:13px;color:var(--muted);margin-bottom:2.2rem;max-width:270px;line-height:1.85}
+.btn-group{display:flex;flex-direction:column;gap:12px;width:100%;max-width:280px}
+#upload-screen .content{flex:1;padding:1.8rem 1.4rem;display:flex;flex-direction:column;gap:1.4rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:300;color:var(--ink);margin-bottom:.2rem}
+.section-sub{font-size:12px;color:var(--muted)}
+.drop-zone{border:1.5px dashed var(--border);border-radius:8px;padding:1.8rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;background:#fff;min-height:140px;position:relative}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--gold);background:var(--gold-light)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-text{font-size:13px;color:var(--muted);text-align:center;line-height:1.7}
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.preview-item{aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;background:#f0e8e0}
+.preview-item img{width:100%;height:100%;object-fit:cover;display:block}
+.remove-btn{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:22px;height:22px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:none}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
+.qr-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.05);text-align:center;margin-bottom:20px}
+.qr-card img{width:200px;height:200px;margin-bottom:10px}
+.qr-lbl{font-size:14px;color:var(--muted)}
+.url-box{background:var(--gold-light);padding:10px;border-radius:6px;font-size:12px;word-break:break-all;margin-bottom:15px;color:var(--gold-dark)}
+.toast{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;z-index:1001;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap;max-width:92vw;text-align:center}
+.toast.show{opacity:1}
+.loading{position:fixed;inset:0;background:rgba(253,250,246,.9);z-index:998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.loading.show{display:flex}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div class="loading" id="loading"><div class="spinner"></div><p id="loading-text">Yükleniyor...</p></div>
+
+<div class="screen active" id="landing">
+  <div class="top-bar"><div class="logo">Perihan &amp; Çağlar</div></div>
+  <div class="hero">
+    <svg width="68" height="68" viewBox="0 0 72 72" fill="none" style="margin-bottom:1rem;opacity:.85">
+      <circle cx="24" cy="20" r="10" stroke="#c8a4a4" stroke-width="1.5"/>
+      <path d="M8 52c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="#c8a4a4" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="48" cy="20" r="10" stroke="#c9a84c" stroke-width="1.5"/>
+      <path d="M32 52c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="couple-names">Perihan &amp; Çağlar</div>
+    <h1>Anılarınızı<br><em>bizimle paylaşın</em></h1>
+    <p>Bu özel günde çektiğiniz fotoğrafları yükleyin — her an değerli 🤍</p>
+    <div class="btn-group">
+      <button class="btn-primary" onclick="showScreen('upload-screen')"><i class="ti ti-camera"></i> Fotoğraf Yükle</button>
+      <button class="btn-secondary" onclick="showScreen('qr-screen')"><i class="ti ti-qrcode"></i> QR Kodu Göster</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="upload-screen">
+  <div class="top-bar">
+    <div class="logo">Perihan &amp; Çağlar</div>
+    <button class="back-btn" onclick="showScreen('landing')"><i class="ti ti-arrow-left"></i> Geri</button>
+  </div>
+  <div class="content">
+    <div>
+      <div class="section-title">Fotoğraf Yükle</div>
+      <div class="section-sub">Perihan &amp; Çağlar için çektiğiniz anları paylaşın 🤍</div>
+    </div>
+    <div>
+      <label class="lbl" for="guest-name">Adınız</label>
+      <input class="txt-input" type="text" id="guest-name" placeholder="Adınızı yazın..." maxlength="40">
+    </div>
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/*" multiple>
+      <i class="ti ti-photo-plus" style="font-size:36px;color:var(--rose)"></i>
+      <div class="drop-text"><strong>Fotoğraf seçin</strong> veya buraya sürükleyin</div>
+    </div>
+    <div class="preview-grid" id="preview-grid" style="display:none"></div>
+    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <button class="btn-primary" id="upload-btn" onclick="uploadPhotos()" disabled style="width:100%"><i class="ti ti-upload"></i> Drive'a Gönder</button>
+  </div>
+</div>
+
+<div class="screen" id="qr-screen">
+  <div class="top-bar">
+    <div class="logo">Perihan &amp; Çağlar</div>
+    <button class="back-btn" onclick="showScreen('landing')"><i class="ti ti-arrow-left"></i> Geri</button>
+  </div>
+  <div class="content">
+    <div class="section-title">Masa QR Kodu</div>
+    <div class="qr-card">
+      <img id="qr-img" src="" alt="QR Kod">
+      <div class="qr-lbl">Perihan &amp; Çağlar — 2026</div>
+    </div>
+    <div class="url-box" id="qr-url-box">URL yükleniyor...</div>
+    <div class="btn-group" style="max-width: 100%;">
+      <button class="btn-primary" onclick="copyURL()"><i class="ti ti-copy"></i> Linki Kopyala</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  CONFIG & GLOBAL STATE
+// ════════════════════════════════════════════
+const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhBr1lMvWLgARSatfaw5YB_NqvodX1kbE0lad4pTajFgYoDEW__ukZkWNA8a3NQ6-Ccw/exec";
+
+let selectedFiles = [];
+
+// ════════════════════════════════════════════
+//  SCREEN MGT
+// ════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'qr-screen') buildQR();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showLoading(txt) {
+  document.getElementById('loading-text').textContent = txt;
+  document.getElementById('loading').classList.add('show');
+}
+
+function hideLoading() { document.getElementById('loading').classList.remove('show'); }
+
+// ════════════════════════════════════════════
+//  UPLOAD LOGIC (GOOGLE DRIVE)
+// ════════════════════════════════════════════
+document.getElementById('file-input').addEventListener('change', e => {
+  Array.from(e.target.files).forEach(f => {
+    if (!f.type.startsWith('image/')) return;
+    selectedFiles.push(f);
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const div = document.createElement('div');
+      div.className = 'preview-item';
+      div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
+      document.getElementById('preview-grid').appendChild(div);
+    };
+    reader.readAsDataURL(f);
+  });
+  document.getElementById('preview-grid').style.display = 'grid';
+  document.getElementById('upload-btn').disabled = false;
+});
+
+function removeFile(idx) { selectedFiles.splice(idx, 1); renderPreview(); }
+
+function renderPreview() {
+  const grid = document.getElementById('preview-grid');
+  grid.innerHTML = '';
+  selectedFiles.forEach((f, i) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const div = document.createElement('div');
+      div.className = 'preview-item';
+      div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
+      grid.appendChild(div);
+    };
+    reader.readAsDataURL(f);
+  });
+  if(!selectedFiles.length) { grid.style.display='none'; document.getElementById('upload-btn').disabled=true; }
+}
+
+function compressImage(file) {
+  return new Promise((res) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1200;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        res(c.toDataURL('image/jpeg', 0.8));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadPhotos() {
+  const guestName = document.getElementById('guest-name').value.trim() || 'Anonim Misafir';
+  const btn = document.getElementById('upload-btn');
+  btn.disabled = true;
+  document.getElementById('progress-bar').style.display = 'block';
+
+  try {
+    for (let i = 0; i < selectedFiles.length; i++) {
+      showLoading(`Drive'a Yükleniyor (${i+1}/${selectedFiles.length})...`);
+      const dataURL = await compressImage(selectedFiles[i]);
+      
+      const payload = {
+        guest: guestName,
+        data: dataURL,
+        name: `PC_${guestName}_${Date.now()}_${i}.jpg`
+      };
+
+      await fetch(DRIVE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload)
+      });
+
+      document.getElementById('progress-fill').style.width = ((i+1)/selectedFiles.length)*100 + '%';
+    }
+
+    hideLoading();
+    showToast('🤍 Teşekkürler, anılarınız Google Drive\'a eklendi!');
+    selectedFiles = []; renderPreview();
+    document.getElementById('guest-name').value = '';
+    setTimeout(() => { document.getElementById('progress-bar').style.display = 'none'; }, 1500);
+
+  } catch (e) {
+    hideLoading();
+    showToast('Bir hata oluştu.');
+    console.error(e);
+  }
+  btn.disabled = false;
+}
+
+// ════════════════════════════════════════════
+//  QR & UTILS
+// ════════════════════════════════════════════
+function buildQR() {
+  const url = window.location.href.split('?')[0].split('#')[0];
+  document.getElementById('qr-url-box').textContent = url;
+  const src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(url) + '&color=2c2016&bgcolor=ffffff&margin=10';
+  document.getElementById('qr-img').src = src;
+}
+
+function copyURL() { navigator.clipboard.writeText(window.location.href.split('#')[0]); showToast('Link kopyalandı!'); }
+</script>
+</body>
+</html>
