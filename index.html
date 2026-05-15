@@ -75,7 +75,7 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
     </svg>
     <div class="couple-names">Perihan &amp; Çağlar</div>
     <h1>Anılarınızı<br><em>bizimle paylaşın</em></h1>
-    <p>Bu özel günde çektiğiniz fotoğrafları yükleyin — her an değerli 🤍</p>
+    <p>Bu özel günde çektiğiniz fotoğrafları yükleyin la — her an değerli 🤍</p>
     <div class="btn-group">
       <button class="btn-primary" onclick="showScreen('upload-screen')"><i class="ti ti-camera"></i> Fotoğraf Yükle</button>
       <button class="btn-secondary" onclick="showScreen('qr-screen')"><i class="ti ti-qrcode"></i> QR Kodu Göster</button>
@@ -91,7 +91,7 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
   <div class="content">
     <div>
       <div class="section-title">Fotoğraf Yükle</div>
-      <div class="section-sub">Perihan &amp; Çağlar için çektiğiniz anları paylaşın 🤍</div>
+      <div class="section-sub">Perihan &amp; Çağlar için çektiğiniz anları orijinal kalitede paylaşın 🤍</div>
     </div>
     <div>
       <label class="lbl" for="guest-name">Adınız</label>
@@ -100,11 +100,11 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
     <div class="drop-zone" id="drop-zone">
       <input type="file" id="file-input" accept="image/*" multiple>
       <i class="ti ti-photo-plus" style="font-size:36px;color:var(--rose)"></i>
-      <div class="drop-text"><strong>Fotoğraf seçin</strong> veya buraya sürükleyin</div>
+      <div class="drop-text"><strong>Orijinal kalitede seçin</strong> veya buraya sürükleyin</div>
     </div>
     <div class="preview-grid" id="preview-grid" style="display:none"></div>
     <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    <button class="btn-primary" id="upload-btn" onclick="uploadPhotos()" disabled style="width:100%"><i class="ti ti-upload"></i> An'ı Paylaş</button>
+    <button class="btn-primary" id="upload-btn" onclick="uploadPhotos()" disabled style="width:100%"><i class="ti ti-upload"></i> Drive'a Gönder</button>
   </div>
 </div>
 
@@ -127,7 +127,6 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 // ════════════════════════════════════════════
 //  CONFIG & GOOGLE DRIVE APPS SCRIPT
 // ════════════════════════════════════════════
-// Sağladığınız Deployment ID otomatik olarak bu URL'nin içindedir
 const DEPLOYMENT_ID = "AKfycbxhBr1lMvWLgARSatfaw5YB_NqvodX1kbE0lad4pTajFgYoDEW__ukZkWNA8a3NQ6-Ccw";
 const DRIVE_URL = `https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec`;
 
@@ -190,31 +189,17 @@ function renderPreview() {
   if(!selectedFiles.length) { grid.style.display='none'; document.getElementById('upload-btn').disabled=true; }
 }
 
-function compressImage(file) {
-  return new Promise((res) => {
+// Orijinal dosya verisini oku (Hiçbir sıkıştırma yapılmaz)
+function readFileAsDataURL(file) {
+  return new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        const MAX = 1200;
-        let w = img.width, h = img.height;
-        if (w > MAX || h > MAX) {
-          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
-          else { w = Math.round(w * MAX / h); h = MAX; }
-        }
-        const c = document.createElement('canvas');
-        c.width = w; c.height = h;
-        c.getContext('2d').drawImage(img, 0, 0, w, h);
-        res(c.toDataURL('image/jpeg', 0.8));
-      };
-      img.src = ev.target.result;
-    };
+    reader.onload = (e) => resolve(e.target.result);
     reader.readAsDataURL(file);
   });
 }
 
 // ════════════════════════════════════════════
-//  DOSYA YÜKLEME (GOOGLE DRIVE)
+//  DOSYA YÜKLEME (ORİJİNAL KALİTE)
 // ════════════════════════════════════════════
 async function uploadPhotos() {
   const guestName = document.getElementById('guest-name').value.trim() || 'Anonim Misafir';
@@ -224,20 +209,21 @@ async function uploadPhotos() {
 
   try {
     for (let i = 0; i < selectedFiles.length; i++) {
-      showLoading(`Anılar Paylaşılıyor.. (${i+1}/${selectedFiles.length})...`);
-      const dataURL = await compressImage(selectedFiles[i]);
+      const currentFile = selectedFiles[i];
+      showLoading(`Orijinal Kalitede Yükleniyor (${i+1}/${selectedFiles.length})...`);
+      
+      const dataURL = await readFileAsDataURL(currentFile);
       
       const payload = {
         guest: guestName,
         data: dataURL,
-        name: `Düğün_${guestName}_${Date.now()}_${i}.jpg`
+        name: `Orijinal_${guestName}_${Date.now()}_${i}_${currentFile.name}`
       };
 
-      // no-cors modu Drive yüklemelerinde güvenilir sonuç için gereklidir
       await fetch(DRIVE_URL, {
         method: "POST",
         mode: "no-cors", 
-        headers: { "Content-Type": "text/plain" }, // CORS bypass için text/plain
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
       });
 
@@ -245,7 +231,7 @@ async function uploadPhotos() {
     }
 
     hideLoading();
-    showToast('🤍 Teşekkürler! Fotoğraflar Drive klasörüne ulaştı.');
+    showToast('🤍 Harika! Tüm fotoğraflar orijinal kalitede iletildi.');
     selectedFiles = []; renderPreview();
     document.getElementById('guest-name').value = '';
     setTimeout(() => { document.getElementById('progress-bar').style.display = 'none'; }, 2000);
