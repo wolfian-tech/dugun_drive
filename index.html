@@ -43,9 +43,9 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .drop-text{font-size:13px;color:var(--muted);text-align:center;line-height:1.7}
 .preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.preview-item{aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;background:#f0e8e0}
-.preview-item img{width:100%;height:100%;object-fit:cover;display:block}
-.remove-btn{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:22px;height:22px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.preview-item{aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;background:#f0e8e0;display:flex;align-items:center;justify-content:center}
+.preview-item img, .preview-item video{width:100%;height:100%;object-fit:cover;display:block}
+.remove-btn{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:22px;height:22px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;z-index:10}
 .progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:none;margin-top:10px}
 .progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
 .qr-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.05);text-align:center;margin-bottom:20px}
@@ -75,9 +75,9 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
     </svg>
     <div class="couple-names">Perihan &amp; Çağlar</div>
     <h1>Anılarınızı<br><em>bizimle paylaşın</em></h1>
-    <p>Bu özel günde çektiğiniz fotoğrafları yükleyin la — her an değerli 🤍</p>
+    <p>Bu özel günde çektiğiniz fotoğraf ve videoları yükleyin — her an değerli 🤍</p>
     <div class="btn-group">
-      <button class="btn-primary" onclick="showScreen('upload-screen')"><i class="ti ti-camera"></i> Fotoğraf Yükle</button>
+      <button class="btn-primary" onclick="showScreen('upload-screen')"><i class="ti ti-camera"></i> Yüklemeye Başla</button>
       <button class="btn-secondary" onclick="showScreen('qr-screen')"><i class="ti ti-qrcode"></i> QR Kodu Göster</button>
     </div>
   </div>
@@ -90,21 +90,21 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
   </div>
   <div class="content">
     <div>
-      <div class="section-title">Fotoğraf Yükle</div>
-      <div class="section-sub">Perihan &amp; Çağlar için çektiğiniz anları orijinal kalitede paylaşın 🤍</div>
+      <div class="section-title">Anı Paylaş</div>
+      <div class="section-sub">Fotoğraf veya video yükleyin (Maks 200MB) 🤍</div>
     </div>
     <div>
       <label class="lbl" for="guest-name">Adınız</label>
       <input class="txt-input" type="text" id="guest-name" placeholder="Adınızı yazın..." maxlength="40">
     </div>
     <div class="drop-zone" id="drop-zone">
-      <input type="file" id="file-input" accept="image/*" multiple>
-      <i class="ti ti-photo-plus" style="font-size:36px;color:var(--rose)"></i>
-      <div class="drop-text"><strong>Orijinal kalitede seçin</strong> veya buraya sürükleyin</div>
+      <input type="file" id="file-input" accept="image/*,video/*" multiple>
+      <i class="ti ti-circle-plus" style="font-size:36px;color:var(--rose)"></i>
+      <div class="drop-text"><strong>Dosya seçin</strong> veya sürükleyin<br><span style="font-size:10px; opacity:0.7">(Video sınırı: 200MB)</span></div>
     </div>
     <div class="preview-grid" id="preview-grid" style="display:none"></div>
     <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    <button class="btn-primary" id="upload-btn" onclick="uploadPhotos()" disabled style="width:100%"><i class="ti ti-upload"></i> Drive'a Gönder</button>
+    <button class="btn-primary" id="upload-btn" onclick="uploadFiles()" disabled style="width:100%"><i class="ti ti-upload"></i> Drive'a Gönder</button>
   </div>
 </div>
 
@@ -129,6 +129,7 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 // ════════════════════════════════════════════
 const DEPLOYMENT_ID = "AKfycbxhBr1lMvWLgARSatfaw5YB_NqvodX1kbE0lad4pTajFgYoDEW__ukZkWNA8a3NQ6-Ccw";
 const DRIVE_URL = `https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec`;
+const MAX_VIDEO_SIZE = 200 * 1024 * 1024; // 200 MB
 
 let selectedFiles = [];
 
@@ -152,26 +153,43 @@ function showLoading(txt) {
 function hideLoading() { document.getElementById('loading').classList.remove('show'); }
 
 // ════════════════════════════════════════════
-//  FOTOĞRAF İŞLEMLERİ
+//  DOSYA İŞLEMLERİ
 // ════════════════════════════════════════════
 document.getElementById('file-input').addEventListener('change', e => {
-  Array.from(e.target.files).forEach(f => {
-    if (!f.type.startsWith('image/')) return;
+  const files = Array.from(e.target.files);
+  
+  files.forEach(f => {
+    // Video boyutu kontrolü
+    if (f.type.startsWith('video/') && f.size > MAX_VIDEO_SIZE) {
+      showToast(`${f.name} çok büyük (Sınır: 200MB)`);
+      return;
+    }
+    
     selectedFiles.push(f);
     const reader = new FileReader();
     reader.onload = ev => {
       const div = document.createElement('div');
       div.className = 'preview-item';
-      div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
+      
+      if(f.type.startsWith('image/')) {
+        div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
+      } else {
+        div.innerHTML = `<i class="ti ti-video" style="font-size:24px; color:var(--muted)"></i><button class="remove-btn" onclick="removeFile(${selectedFiles.length-1})"><i class="ti ti-x"></i></button>`;
+      }
+      
       document.getElementById('preview-grid').appendChild(div);
     };
     reader.readAsDataURL(f);
   });
+  
   document.getElementById('preview-grid').style.display = 'grid';
-  document.getElementById('upload-btn').disabled = false;
+  document.getElementById('upload-btn').disabled = selectedFiles.length === 0;
 });
 
-function removeFile(idx) { selectedFiles.splice(idx, 1); renderPreview(); }
+function removeFile(idx) { 
+  selectedFiles.splice(idx, 1); 
+  renderPreview(); 
+}
 
 function renderPreview() {
   const grid = document.getElementById('preview-grid');
@@ -181,15 +199,21 @@ function renderPreview() {
     reader.onload = ev => {
       const div = document.createElement('div');
       div.className = 'preview-item';
-      div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
+      if(f.type.startsWith('image/')) {
+        div.innerHTML = `<img src="${ev.target.result}"><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
+      } else {
+        div.innerHTML = `<i class="ti ti-video" style="font-size:24px; color:var(--muted)"></i><button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>`;
+      }
       grid.appendChild(div);
     };
     reader.readAsDataURL(f);
   });
-  if(!selectedFiles.length) { grid.style.display='none'; document.getElementById('upload-btn').disabled=true; }
+  if(!selectedFiles.length) { 
+    grid.style.display='none'; 
+    document.getElementById('upload-btn').disabled=true; 
+  }
 }
 
-// Orijinal dosya verisini oku (Hiçbir sıkıştırma yapılmaz)
 function readFileAsDataURL(file) {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -199,9 +223,9 @@ function readFileAsDataURL(file) {
 }
 
 // ════════════════════════════════════════════
-//  DOSYA YÜKLEME (ORİJİNAL KALİTE)
+//  YÜKLEME (FOTO & VİDEO)
 // ════════════════════════════════════════════
-async function uploadPhotos() {
+async function uploadFiles() {
   const guestName = document.getElementById('guest-name').value.trim() || 'Anonim Misafir';
   const btn = document.getElementById('upload-btn');
   btn.disabled = true;
@@ -210,14 +234,15 @@ async function uploadPhotos() {
   try {
     for (let i = 0; i < selectedFiles.length; i++) {
       const currentFile = selectedFiles[i];
-      showLoading(`Orijinal Kalitede Yükleniyor (${i+1}/${selectedFiles.length})...`);
+      const fileType = currentFile.type.startsWith('image/') ? 'FOTO' : 'VIDEO';
+      showLoading(`${fileType} Yükleniyor (${i+1}/${selectedFiles.length})...`);
       
       const dataURL = await readFileAsDataURL(currentFile);
       
       const payload = {
         guest: guestName,
         data: dataURL,
-        name: `Orijinal_${guestName}_${Date.now()}_${i}_${currentFile.name}`
+        name: `${fileType}_${guestName}_${Date.now()}_${currentFile.name}`
       };
 
       await fetch(DRIVE_URL, {
@@ -231,14 +256,14 @@ async function uploadPhotos() {
     }
 
     hideLoading();
-    showToast('🤍 Harika! Tüm fotoğraflar orijinal kalitede iletildi.');
+    showToast('🤍 Harika! Tüm anılarınız Drive klasörüne yüklendi.');
     selectedFiles = []; renderPreview();
     document.getElementById('guest-name').value = '';
     setTimeout(() => { document.getElementById('progress-bar').style.display = 'none'; }, 2000);
 
   } catch (e) {
     hideLoading();
-    showToast('Bağlantı hatası oluştu, tekrar deneyin.');
+    showToast('Hata oluştu, tekrar deneyin.');
     console.error(e);
   }
   btn.disabled = false;
