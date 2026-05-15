@@ -25,13 +25,10 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 .lbl{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px}
 .txt-input{width:100%;border:.5px solid var(--border);border-radius:4px;padding:11px 13px;font-family:'Jost',sans-serif;font-size:13px;background:#fff;color:var(--ink);outline:none;transition:border .2s}
 .txt-input:focus{border-color:var(--gold)}
-.err{font-size:12px;color:#c0392b;min-height:16px;text-align:center}
 .btn-primary{background:var(--gold-dark);color:#fff;border:none;border-radius:4px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-primary:hover{background:var(--rose-dark)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .btn-secondary{background:transparent;color:var(--gold-dark);border:.5px solid var(--gold);border-radius:4px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-secondary:hover{background:var(--gold-light)}
-#landing{background:linear-gradient(160deg,#fdfaf6 0%,#f5ede8 100%)}
 .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center}
 .couple-names{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:var(--gold-dark);margin-bottom:.3rem;letter-spacing:.04em}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:.5rem}
@@ -49,11 +46,10 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
 .preview-item{aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;background:#f0e8e0}
 .preview-item img{width:100%;height:100%;object-fit:cover;display:block}
 .remove-btn{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:22px;height:22px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
-.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:none}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:none;margin-top:10px}
 .progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
 .qr-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.05);text-align:center;margin-bottom:20px}
 .qr-card img{width:200px;height:200px;margin-bottom:10px}
-.qr-lbl{font-size:14px;color:var(--muted)}
 .url-box{background:var(--gold-light);padding:10px;border-radius:6px;font-size:12px;word-break:break-all;margin-bottom:15px;color:var(--gold-dark)}
 .toast{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;z-index:1001;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap;max-width:92vw;text-align:center}
 .toast.show{opacity:1}
@@ -121,30 +117,25 @@ html,body{min-height:100%;background:var(--cream);color:var(--ink);font-family:'
     <div class="section-title">Masa QR Kodu</div>
     <div class="qr-card">
       <img id="qr-img" src="" alt="QR Kod">
-      <div class="qr-lbl">Perihan &amp; Çağlar — 2026</div>
     </div>
     <div class="url-box" id="qr-url-box">URL yükleniyor...</div>
-    <div class="btn-group" style="max-width: 100%;">
-      <button class="btn-primary" onclick="copyURL()"><i class="ti ti-copy"></i> Linki Kopyala</button>
-    </div>
+    <button class="btn-primary" onclick="copyURL()" style="width:100%"><i class="ti ti-copy"></i> Linki Kopyala</button>
   </div>
 </div>
 
 <script>
 // ════════════════════════════════════════════
-//  CONFIG & GLOBAL STATE
+//  CONFIG & GOOGLE DRIVE APPS SCRIPT
 // ════════════════════════════════════════════
-const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhBr1lMvWLgARSatfaw5YB_NqvodX1kbE0lad4pTajFgYoDEW__ukZkWNA8a3NQ6-Ccw/exec";
+// Sağladığınız Deployment ID otomatik olarak bu URL'nin içindedir
+const DEPLOYMENT_ID = "AKfycbxhBr1lMvWLgARSatfaw5YB_NqvodX1kbE0lad4pTajFgYoDEW__ukZkWNA8a3NQ6-Ccw";
+const DRIVE_URL = `https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec`;
 
 let selectedFiles = [];
 
-// ════════════════════════════════════════════
-//  SCREEN MGT
-// ════════════════════════════════════════════
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
   if (id === 'qr-screen') buildQR();
 }
 
@@ -162,7 +153,7 @@ function showLoading(txt) {
 function hideLoading() { document.getElementById('loading').classList.remove('show'); }
 
 // ════════════════════════════════════════════
-//  UPLOAD LOGIC (GOOGLE DRIVE)
+//  FOTOĞRAF İŞLEMLERİ
 // ════════════════════════════════════════════
 document.getElementById('file-input').addEventListener('change', e => {
   Array.from(e.target.files).forEach(f => {
@@ -222,6 +213,9 @@ function compressImage(file) {
   });
 }
 
+// ════════════════════════════════════════════
+//  DOSYA YÜKLEME (GOOGLE DRIVE)
+// ════════════════════════════════════════════
 async function uploadPhotos() {
   const guestName = document.getElementById('guest-name').value.trim() || 'Anonim Misafir';
   const btn = document.getElementById('upload-btn');
@@ -230,18 +224,20 @@ async function uploadPhotos() {
 
   try {
     for (let i = 0; i < selectedFiles.length; i++) {
-      showLoading(`Drive'a Yükleniyor (${i+1}/${selectedFiles.length})...`);
+      showLoading(`Drive'a Aktarılıyor (${i+1}/${selectedFiles.length})...`);
       const dataURL = await compressImage(selectedFiles[i]);
       
       const payload = {
         guest: guestName,
         data: dataURL,
-        name: `PC_${guestName}_${Date.now()}_${i}.jpg`
+        name: `Düğün_${guestName}_${Date.now()}_${i}.jpg`
       };
 
-      await fetch(DRIVE_SCRIPT_URL, {
+      // no-cors modu Drive yüklemelerinde güvenilir sonuç için gereklidir
+      await fetch(DRIVE_URL, {
         method: "POST",
-        mode: "no-cors",
+        mode: "no-cors", 
+        headers: { "Content-Type": "text/plain" }, // CORS bypass için text/plain
         body: JSON.stringify(payload)
       });
 
@@ -249,22 +245,19 @@ async function uploadPhotos() {
     }
 
     hideLoading();
-    showToast('🤍 Teşekkürler, anılarınız Google Drive\'a eklendi!');
+    showToast('🤍 Teşekkürler! Fotoğraflar Drive klasörüne ulaştı.');
     selectedFiles = []; renderPreview();
     document.getElementById('guest-name').value = '';
-    setTimeout(() => { document.getElementById('progress-bar').style.display = 'none'; }, 1500);
+    setTimeout(() => { document.getElementById('progress-bar').style.display = 'none'; }, 2000);
 
   } catch (e) {
     hideLoading();
-    showToast('Bir hata oluştu.');
+    showToast('Bağlantı hatası oluştu, tekrar deneyin.');
     console.error(e);
   }
   btn.disabled = false;
 }
 
-// ════════════════════════════════════════════
-//  QR & UTILS
-// ════════════════════════════════════════════
 function buildQR() {
   const url = window.location.href.split('?')[0].split('#')[0];
   document.getElementById('qr-url-box').textContent = url;
